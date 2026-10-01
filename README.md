@@ -7,4 +7,3 @@ Embedded_Arch_IC_Brainstorm
         |                  └── Special Project Outline_02
         └── NSTC Project┌── Pro's Article
                         └── Limitation_02 of Pro's Article
-s
