@@ -1,9 +1,14 @@
 # Embedded_Arch_IC_Brainstorm
 Embedded_Arch_IC_Brainstorm
 ├── README.md
-└── Note┌── Special Project┌── Pro's Article
-        |                  ├── Limitation_01 of Pro's Article
-        |                  ├── Special Project Outline_01
-        |                  └── Special Project Outline_02
-        └── NSTC Project┌── Pro's Article
-                        └── Limitation_02 of Pro's Article
+└── Note┌── Special Project┌── Pro's Article.pdf
+        |                  ├── Limitation of Pro's Article.png
+        |                  ├── Research Outline 01.pdf
+        |                  ├── Research Outline 02.pdf
+        |                  ├── Research Outline 03.md
+        |                  ├── Literature Review 2021 to 2026.md
+        |                  ├── Experiment Design.md
+        |                  └── 30_10_2026 Lab Meeting┌── 30_09_2026 Paper.jpg
+        |                                            └── 30_10_2026 Recording.m4a
+        └── NSTC Project┌── Pro's Article.pdf
+                        └── Limitation of Pro's Article.png
