@@ -13,12 +13,12 @@
 | 偵測方式 | 「MobileNetV2 / ResNet 物件偵測」（偵測頭未定） | **FDM 負責定位（ROI）＋ CNN 負責分類，不需要偵測頭** | 與教授論文完全一致；CNN 輸入固定，最適合做硬體 |
 | CNN 輸入 | 未定 | **224×224×3** | 與教授論文相同（ImageNet 標準） |
 | 影片輸入 | 未定（教授用 4K） | **1280×720（主實驗）**；1080p 只在 ZCU104 上做延伸 | PYNQ-Z2 的 DDR3 / BRAM 吃不下 4K；720p 雙板都可行 |
-| 輕量模型 | MobileNetV2 | **MobileNetV2**（保留） | 運算子集合與 ResNet 重疊（都有殘差相加），硬體成本低 |
+| 輕量模型 | MobileNetV2 | **MobileNetV1** | 直接維持教授版本，使用 Transfer Learning (Feature Extraction) |
 | 重量模型 | ResNet（未定） | **ResNet18**；剪枝 ResNet50 移到 Future Work | 見 §3 |
 | 分類頭 | 未定 | **4 類 + 1 個「背景」類**（bird / train / airplane / car / background） | 沿用教授的類別；背景類用來吸收 FDM 誤報，取代 ATBS 的功能 |
 | 精度指標 | mAP | **Top-1 Accuracy**（FP32 基準 vs. 部署精度） | 沒有偵測頭，mAP 不適用；與教授的 Acc% 一致 |
 | 實驗數 | 6 組 | **3 組主實驗 + 1 組健全性檢查** | 4–6 頁的會議論文放不下 6 組 |
-| 投稿 | 三個會議並列 | **三擇一（建議 AICAS）** | 三個截稿日都早於 GLSVLSI 放榜 → 同一篇不能一稿多投，見 §6 |
+| 投稿 | 三個會議並列 | **GLSVLSI (首選目標)** | 三個截稿日相近，同一篇不能一稿多投，見 §6 |
 
 ---
 
@@ -129,7 +129,7 @@ v0.1 把交接牆放在「CPU → DPU 之間的張量傳遞」，但 224×224×3
 
 ### 3.2 確立使用 MobileNetV1
 
-- **與教授論文對齊**：教授使用的是 MobileNetV1。我們直接向教授拿他的預訓練權重，凍結（Freeze）前面的卷積層，只拔掉並重新訓練最後一層（Fully Connected Layer）為 5 個類別（加入 Background）。這能保證特徵提取能力與教授完全一致，讓對照組絕對公平。
+- **與教授論文對齊**：教授使用的是 MobileNetV1。我們直接向教授拿他的預訓練權重與 4K 測試影片（預計 2026/10/15 取得），並凍結（Freeze）前面的卷積層（Transfer Learning Feature Extraction），只拔掉並重新訓練最後一層（Fully Connected Layer）為 5 個類別（加入 Background）。這能保證特徵提取能力與教授完全一致，讓對照組絕對公平。
 - **硬體友善（DSA 降維打擊）**：MobileNetV1 是「直筒式（Straight stack）」架構，只有 `Depthwise` 與 `Pointwise` 卷積，**沒有** V2 的跳躍連接（Skip Connection / Residuals）。這表示在開發**第一階段 P0 範圍**時，我們的 DSA 不用設計複雜的 `ADD` 模組或暫存分支特徵圖，資料流非常乾淨，能大幅縮短開發與驗證時程。
 
 ### 3.3 ZCU104 記憶體預算（MobileNetV1 Fully-Cached 可行性）
@@ -162,7 +162,7 @@ v0.1 把交接牆放在「CPU → DPU 之間的張量傳遞」，但 224×224×3
 *   **硬體組合（4台橫向對比）**：
     *   ZCU104（搭載客製化 DSA，組態為 Spatial 空間融合模式）
     *   PYNQ-Z2（搭載客製化 DSA，組態為 Temporal 時間乒乓模式）
-    *   NVIDIA Jetson Nano
+    *   NVIDIA Jetson Orin Nano
     *   Hailo-8（＋ x86 CPU on PC）
 *   **核心評估指標**：FPJ (影格/焦耳)、端到端延遲 (ms)、系統吞吐量 (FPS)、DDR 訪存頻寬 (GB/s)、Top-1 Accuracy。
 *   **設計這組的理由**：證明客製化 DSA 透過軟硬體協同優化（Pipeline Fusion），在面對 Memory-bound 的輕量網路時，無論是在低資源與落後製程（PYNQ-Z2）或先進製程平台（ZCU104）上，系統級能效（FPJ）與延遲皆能超越通用 GPU（Jetson）與專用 ASIC（Hailo，因其受限於 CPU 處理 FDM 的交接牆）。
@@ -216,7 +216,7 @@ v0.1 把交接牆放在「CPU → DPU 之間的張量傳遞」，但 224×224×3
 |---|---|---|---|
 | ZCU104 | 板載 INA226（PYNQ `pmbus` 可讀 PS / PL 各電源軌） | PS 端 AXI Performance Monitor + DSA 內建計數器 | 固定 PL 時脈 |
 | PYNQ-Z2 | 板上沒有感測器 → **外接 USB 功率計 / shunt + DAQ** | DSA 內建計數器；A 配置用 A9 PMU | 固定 PL 時脈 |
-| Jetson Nano | 板載 INA3221（tegrastats / jtop） | tegrastats EMC 使用率（近似） | 10 W 模式 + `jetson_clocks` |
+| Jetson Orin Nano | 板載 INA3221（tegrastats / jtop） | tegrastats EMC 使用率（近似） | 10 W 模式 + `jetson_clocks` |
 | Hailo-8 + x86 | Hailo 模組量測（若支援）+ Intel RAPL；牆插功率計量總量 | Intel PCM（近似） | 固定 CPU 型號 / 調速器 |
 
 統一條件：720p 測試序列、batch = 1、暖機後取 N 次的平均 ± 標準差、所有平台使用**同一份微調後的模型權重**。
@@ -244,8 +244,8 @@ v0.1 把交接牆放在「CPU → DPU 之間的張量傳遞」，但 224×224×3
 
 | 優先級 | 內容 | 論文是否需要 |
 |---|---|---|
-| **P0** | ZCU104：FDM 引擎 + CNN 引擎（MobileNetV2，Spatial）；配置 A / B / C⁻ / C；Jetson / Hailo 跑 MobileNetV2 | **最小可投稿單元（可投 short paper）** |
-| **P1** | PYNQ-Z2 Temporal 模式（MobileNetV2）＋ 實驗 3a（ZCU104 雙模式） | **證明可組態性 → 與 P0 合起來可投 full paper** |
+| **P0** | ZCU104：FDM 引擎 + CNN 引擎（MobileNetV1，Spatial）；配置 A / B / C⁻ / C；Jetson Orin Nano / Hailo 跑 MobileNetV1 | **最小可投稿單元（可投 short paper）** |
+| **P1** | PYNQ-Z2 Temporal 模式（MobileNetV1）＋ 實驗 3a（ZCU104 雙模式） | **證明可組態性 → 與 P0 合起來可投 full paper** |
 | P2 | ResNet18（ZCU104 → PYNQ-Z2）、全平台 ResNet18 | 強化 Compute vs. Memory 的論述 |
 | Stretch | 1080p、實驗 3b 掃描、多 ROI（連通元件標記） | 加分 |
 | Future Work | 剪枝 ResNet50、ATBS、Versal / ASIC 移植 | 不做 |
@@ -254,9 +254,9 @@ v0.1 把交接牆放在「CPU → DPU 之間的張量傳遞」，但 224×224×3
 
 | 期間 | 週次 | 工作 |
 |---|---|---|
-| 10 月中 – 11 月中 | W1–5 | 微調 5 類 MobileNetV2 / ResNet18 + INT8 量化；Python / OpenCV 版 FDM 黃金模型；**跑出 A / B / Jetson / Hailo 的基準數據** |
+| 10 月中 – 11 月中 | W1–5 | 微調 5 類 MobileNetV1 / ResNet18 + INT8 量化；Python / OpenCV 版 FDM 黃金模型；**跑出 A / B / Jetson Orin Nano / Hailo 的基準數據** |
 | 11 月中 – 12 月中 | W5–10 | HLS 版 FDM 串流引擎（C-sim 與 RTL co-sim）；CNN 引擎（conv / dw / pw / add）+ 層描述子；Python 描述子產生器 |
-| 12 月中 – 1 月中 | W10–14 | ZCU104 Spatial 模式整合 MobileNetV2 → **P0 完成**；C⁻ 模式位元 |
+| 12 月中 – 1 月中 | W10–14 | ZCU104 Spatial 模式整合 MobileNetV1 → **P0 完成**；C⁻ 模式位元 |
 | 1 月中 – 2 月初 | W14–17 | PYNQ-Z2 Temporal 模式 → **P1 完成**；**2 月初凍結實驗與量測** |
 | 2 月初 – 3 月初 | W17–21 | ResNet18（P2，時間允許才做）；Roofline 數據；寫作、排版、教授審稿 |
 
@@ -275,7 +275,7 @@ v0.1 把交接牆放在「CPU → DPU 之間的張量傳遞」，但 224×224×3
 | A4 ZCU104 容量不足 | ✅ 已解決 | 改分類模式 + 5 類頭 + block fusion → 約 3.5–4.4 MB |
 | A5 「消除所有 DDR」太絕對 | ✅ 已改寫 | 明確定義資料邊界（§2.2） |
 | A6 沒有偵測頭 | ✅ 已解決 | 依教授方法，不需要偵測頭 |
-| A7 Jetson Nano 不支援 INT8 | ⚠️ 未解決 | 標註 FP16；或改用教授實驗室的 Orin Nano（見 §8） |
+| A7 Jetson Orin Nano 支援 INT8 | ✅ 已解決 | 確認教授實驗室有 Jetson Orin Nano，原生支援 INT8，且與教授論文同平台 |
 | B1 Compute-bound 說法矛盾 | ✅ 已改寫 | ResNet18 = Compute-bound + Capacity-bound |
 | B2 B→C 混淆變因 | ✅ 已解決 | 新增 C⁻ |
 | B3 功耗邊界 | ✅ 已解決 | FPJ 報兩層 |
@@ -287,11 +287,3 @@ v0.1 把交接牆放在「CPU → DPU 之間的張量傳遞」，但 224×224×3
 | B9 延遲隨場景變動 | ✅ 已解決 | CNN 輸入固定；分「最壞情況 / 實際序列平均」報告 |
 
 ---
-
-## 8. 待確認
-
-1. **能否借用教授論文的 4K 測試影片與類別標註？**（降採樣到 720p 使用，可直接和教授的數據對照）
-2. **教授實驗室有 Jetson Orin Nano 嗎？** 若有，建議取代或並列 Jetson Nano：支援 INT8、與教授論文同平台，也能解決 A7。
-3. 投稿目標確定為 AICAS 嗎？
-4. MobileNetV2 或退回 V1：是否接受「時程吃緊時退回 V1」這個備案？
-5. FDM 前一幀在 ZCU104 上要放 URAM（追求極致）還是 DDR（容量寬裕）？建議做成參數，兩種都量。
