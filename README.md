@@ -1,6 +1,4 @@
 # Embedded_Arch_IC_Brainstorm
-
-```text
 Embedded_Arch_IC_Brainstorm
 ├── Note
 │   ├── NSTC Project
@@ -21,4 +19,4 @@ Embedded_Arch_IC_Brainstorm
 │       ├── Research Outline 02.pdf
 │       └── Research Outline 03.md
 └── README.md
-```
+
