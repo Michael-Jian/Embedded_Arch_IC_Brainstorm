@@ -10,9 +10,9 @@ Embedded_Arch_IC_Brainstorm
 │   │   ├── Limitation of Pro's Article.png
 │   │   └── Pro's Article.pdf
 │   └── Special Project
-│       ├── 30_10_2026 Lab Meeting
+│       ├── 30_09_2026 Lab Meeting
 │       │   ├── 30_09_2026 Paper.jpg
-│       │   └── 30_10_2026 Recording.m4a
+│       │   └── 30_09_2026 Recording.m4a
 │       ├── Experiment Design.md
 │       ├── Limitation of Pro's Article.png
 │       ├── Literature Review 2021 to 2026.md
