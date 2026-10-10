@@ -4,6 +4,14 @@ Embedded_Arch_IC_Brainstorm
 └── Note┌──Special Project┌── Pro's Article.pdf
         │                 ├── Limitation of Pro's Article.png
         │                 ├── References.md
+        │                 ├── References┌── 1.pdf
+        │                 │             ├── 2.pdf
+        │                 │             ├── 3.pdf
+        │                 │             ├── 4.pdf
+        │                 │             ├── 5.pdf
+        │                 │             ├── 6.pdf
+        │                 │             ├── 7.pdf
+        │                 │             └── 8.pdf 
         │                 ├── Research Outline 01.pdf
         │                 ├── Research Outline 02.pdf
         │                 ├── Research Outline 03.md
