@@ -252,13 +252,12 @@ v0.1 把交接牆放在「CPU → DPU 之間的張量傳遞」，但 224×224×3
 
 ### 6.3 建議時程（以 GLSVLSI 3 月初截稿回推，約 21 週）
 
-| 期間 | 週次 | 工作 |
-|---|---|---|
-| 10 月中 – 11 月中 | W1–5 | 微調 5 類 MobileNetV1 / ResNet18 + INT8 量化；Python / OpenCV 版 FDM 黃金模型；**跑出 A / B / Jetson Orin Nano / Hailo 的基準數據** |
-| 11 月中 – 12 月中 | W5–10 | HLS 版 FDM 串流引擎（C-sim 與 RTL co-sim）；CNN 引擎（conv / dw / pw / add）+ 層描述子；Python 描述子產生器 |
-| 12 月中 – 1 月中 | W10–14 | ZCU104 Spatial 模式整合 MobileNetV1 → **P0 完成**；C⁻ 模式位元 |
-| 1 月中 – 2 月初 | W14–17 | PYNQ-Z2 Temporal 模式 → **P1 完成**；**2 月初凍結實驗與量測** |
-| 2 月初 – 3 月初 | W17–21 | ResNet18（P2，時間允許才做）；Roofline 數據；寫作、排版、教授審稿 |
+| 期間 | 工作 |
+|---|---|
+| 10 月中 – 11 月中 | 微調 5 類 MobileNetV1 / ResNet18 + INT8 量化；Python / OpenCV 版 FDM 黃金模型；**跑出 A / B / Jetson Orin Nano / Hailo 的基準數據** |
+| 11 月中 – 11 月底 | HLS 版 FDM 串流引擎（C-sim 與 RTL co-sim）；CNN 引擎（conv / dw / pw / add）+ 層描述子；Python 描述子產生器 |
+| 12 月初 – 12 月底 | ZCU104 Spatial / PYNQ-Z2 Temporal 模式整合 MobileNetV1 / ResNet18 → **跑出  C⁻ / C  的數據** |
+| 01 月初 – 01 月底 | 凍結實驗與最後量測；Roofline 數據；寫作、排版、教授審稿 |
 
 > [!TIP]
 > **實作建議**：**全面採用 Vitis HLS**。本次研究原則上純用 HLS 進行設計與整合，幾乎不碰底層 RTL code（RTL 開發將保留至未來的 NSTC Project）。「ISA」改稱為**層描述子（layer descriptor）**：每層一筆 {op、尺寸、stride、位址、量化參數}，由控制 FSM 依序執行，並由 Python 從 ONNX 自動產生。這樣既保留「可程式化 DSA」的論述，又不需要寫完整的編譯器。
