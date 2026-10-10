@@ -90,57 +90,6 @@
 - `"sigma-delta background subtraction FPGA"` → 逐像素自適應背景估計
 - `"temporal accumulation slow object detection video surveillance"` → 慢速物體偵測演算法
 
----
-
-### 方向 6：ROI-Based Edge AI 加速架構（你的整體系統架構定位）
-
-**搜尋關鍵字：**
-```
-"ROI based" "CNN accelerator" "edge device" "FPGA"
-"attention" "region proposal" "hardware" "energy efficient"
-"two-stage" "object detection" "preprocessing" "FPGA"
-```
-
-**你會找到什麼：** 有一類論文的思路跟你完全一致——不對整張圖跑 CNN，而是先用輕量級硬體提取 ROI，再只對 ROI 區域跑 CNN。這些論文的價值在於它們的**系統級能效分析方法**：如何量化「ROI 前處理節省了多少 CNN 運算量和功耗」。你的論文也需要這樣的分析框架。
-
-**代表性搜索入口：**
-- `"region proposal hardware accelerator CNN FPGA"` → 硬體 Region Proposal
-- `"attention-based preprocessing edge AI energy efficient"` → 注意力導向的前處理
-
----
-
-### 方向 7：Zynq SoC 上的 PS-PL 協同設計（你的硬體平台工程）
-
-**搜尋關鍵字：**
-```
-"Zynq" "PS PL" "co-design" "video processing"
-"AXI-Lite" "interrupt" "DPU" "Zynq UltraScale"
-"hardware software co-design" "FPGA" "object detection" "Zynq"
-```
-
-**你會找到什麼：** 在 Zynq 平台上實現完整視覺系統的工程性論文。重點學習它們的 **PS-PL 資料傳輸架構**（AXI-Lite vs AXI-HP vs AXI-Stream 的選擇）、**中斷策略**、以及 **DPU 整合方式**。這些是你把設計從「微架構圖」變成「可以跑的系統」的必讀工程參考。
-
-**代表性搜索入口：**
-- `"Zynq UltraScale DPU object detection real-time"` → Zynq 上的 DPU 部署
-- `"Vitis AI Zynq video pipeline AXI-Stream"` → 完整的視覺管線實現
-
----
-
-### 方向 8：Domain-Specific Architecture 設計方法論（你的學術定位）
-
-**搜尋關鍵字：**
-```
-"domain specific accelerator" "design methodology" "edge AI"
-"hardware accelerator" "video analytics" "energy efficiency" "IoT"
-```
-
-**你會找到什麼：** 這類偏綜述性質的論文幫助你理解你的工作在「DSA 設計方法論」這個學術框架中的位置——你不是在做通用加速器，你是在針對「慢速物體偵測」這個特定領域設計專用架構。學會用 DSA 的語言和評估指標來定位你的貢獻。
-
-**代表性搜索入口：**
-- `"domain specific architecture survey edge computing"` → DSA 綜述
-- `"custom accelerator video surveillance FPGA energy"` → 視頻監控專用加速器
-
----
 
 ## 肆、論文閱讀優先順序建議
 
@@ -154,9 +103,7 @@
 | ★★☆ | 方向 5（自適應閾值） | 你的 ATS-FSM 的演算法理論基礎 |
 | ★★☆ | 方向 2（Always-On 運動偵測） | 系統級能效分析方法，論文撰寫時的 comparison baseline |
 | ★★☆ | 方向 4（DVS 處理） | 概念同構，能啟發更多設計靈感 |
-| ★☆☆ | 方向 6（ROI-Based Edge AI） | 論文的學術定位和能效分析框架 |
-| ★☆☆ | 方向 7（Zynq Co-Design） | 實作階段再精讀 |
-| ★☆☆ | 方向 8（DSA 方法論） | 論文撰寫的 Introduction / Related Work 階段 |
+
 
 ---
 
