@@ -21,7 +21,6 @@ Embedded_Arch_IC_Brainstorm
         └── NSTC Project┌── Pro's Article.pdf
                         ├── Limitation of Pro's Article.png
                         ├── Limitation of Pro's Article Analysis.md
-                        ├── References.md
                         └── Experiment Design.md
 
 
