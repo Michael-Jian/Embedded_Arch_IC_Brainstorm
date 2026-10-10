@@ -252,7 +252,7 @@ ATS-FD 的三個模組正好對應第六節的前三個方向：
 | TLI-PE v2（漏失積分 + 噪聲地板） | 持續性、有效訊雜比 | ⑤ |
 | Smart ROI v2（持續性濾波 + 多 ROI） | 抑制短暫誤報、改善多物體裁切 | ⑥ |
 
-整體方向與本分析的結論一致。以下是依據本分析檢查 [Experiment Design.md](Experiment%20Design.md) 後發現、**建議在實驗前修正或驗證**的四個問題。
+整體方向與本分析的結論一致。以下是依據本分析檢查**舊版** Experiment Design 後發現的四個問題。新版 [Experiment Design.md](Experiment%20Design.md) 已全部處理，修改對照見新版第十章。
 
 ### 7.1 ⚠️ 漏失積分公式的衰減方向相反
 
